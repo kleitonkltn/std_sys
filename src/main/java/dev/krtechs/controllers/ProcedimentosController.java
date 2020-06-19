@@ -44,7 +44,7 @@ public class ProcedimentosController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Procedimentos save(@RequestBody @Valid final ProcedimentosDTO dto){ 
+    public Procedimentos save(@RequestBody @Valid final ProcedimentosDTO dto) {
         final Procedimentos procedimentos = new Procedimentos();
         final LocalDate dataFormater = LocalDate.parse(dto.getAccomplishedAt(),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -94,10 +94,12 @@ public class ProcedimentosController {
             final Estabelecimento estabelecimento = estabelecimentoRepository.findById(dto.getEstabelecimento())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Estabelecimento Não Encontrado"));
+            procedimentos.setId(dto.getId());
             procedimentos.setComments(dto.getComments());
             procedimentos.setAccomplishedAt(dataFormater);
             procedimentos.setEstabelecimento(estabelecimento);
             procedimentos.setDescription(dto.getDescription());
+
             return repository.save(procedimentos);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Procedimento Não Encontrado"));
     }
