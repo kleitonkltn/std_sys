@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,23 +35,27 @@ public class EstabelecimentoController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public Estabelecimento save(@RequestBody @Valid Estabelecimento estabelecimento) {
         return repository.save(estabelecimento);
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public Estabelecimento getByID(@PathVariable Integer id) {
         return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estabelecimento Não Encontrado"));
     }
 
     @GetMapping
     @OrderBy("id")
+    @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public List<Estabelecimento> getAll() {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(@PathVariable Integer id) {
         repository.findById(id).map(estabelecimento -> {
             repository.deleteById(id);
@@ -60,7 +65,8 @@ public class EstabelecimentoController {
 
     @PutMapping("{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public void delete(@PathVariable Integer id, @RequestBody @Valid Estabelecimento estabelecimentoUpdate) {
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
+    public void update(@PathVariable Integer id, @RequestBody @Valid Estabelecimento estabelecimentoUpdate) {
         repository.findById(id).map(estabelecimento -> {
             return repository.save(estabelecimentoUpdate);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estabelecimento Não Encontrado"));

@@ -1,10 +1,12 @@
 package dev.krtechs.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 import dev.krtechs.core.exception.ApiErrors;
+import dev.krtechs.core.exception.CustomErrorResponse;
+
+
 
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
@@ -33,5 +38,15 @@ public class ApplicationControllerAdvice {
         final HttpStatus statusCode = exception.getStatus();
         final ApiErrors apiErrors = new ApiErrors(mensageError);
         return new ResponseEntity<>(apiErrors, statusCode);
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseEntity<CustomErrorResponse> handleGenericBadCredentialsException(BadCredentialsException e) {
+        CustomErrorResponse error = new CustomErrorResponse();
+        error.setErrorCode("BAD_CREDENTIALS_ERROR");
+        error.setErrorMsg("INCORRECT CREDENTIALS");
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatus((HttpStatus.UNAUTHORIZED.value()));
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }
