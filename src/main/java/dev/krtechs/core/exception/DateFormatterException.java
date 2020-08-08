@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class DateFormatterException extends RuntimeException{
     private static final long serialVersionUID = 5285788346619184167L;
 
-    public DateFormatterException() {
-        super("Date Mask/Formatter Incorrect - Mask Example(DD/MM/YYYY)");
+    public DateFormatterException(String Mask) {
+        super("Date Mask/Formatter Incorrect - Mask Example("+Mask+")");
     }
 }

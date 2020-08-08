@@ -41,7 +41,7 @@ public class ProcedimentosDTO {
             procedimentos.setDescription(dto.getDescription());
             return procedimentos;
         } catch (DateTimeParseException ex) {
-            throw new DateFormatterException();
+            throw new DateFormatterException("dd/MM/yyyy");
 
         } catch (RuntimeException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Object Incorrect");
