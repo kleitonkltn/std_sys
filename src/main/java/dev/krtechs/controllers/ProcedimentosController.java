@@ -44,7 +44,6 @@ public class ProcedimentosController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public Procedimentos save(@RequestBody @Valid final ProcedimentosDTO dto) {
-        System.out.println(dto.toString());
         Estabelecimento estabelecimento = estabelecimentosService.verifyExists(dto.getEstabelecimento());
         final Procedimentos procedimentos = dto.dtoToProcedimentos(dto, estabelecimento);
         return repository.save(procedimentos);
@@ -72,7 +71,6 @@ public class ProcedimentosController {
     @ResponseStatus(code = HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public void update(@PathVariable final Integer id, @RequestBody @Valid final ProcedimentosDTO dto) {
-        System.out.println(dto.toString());
         repository.findById(id).map(procedimentosMap -> {
             Estabelecimento estabelecimento = estabelecimentosService.verifyExists(dto.getEstabelecimento());
             final Procedimentos procedimentos = dto.dtoToProcedimentos(dto, estabelecimento);
