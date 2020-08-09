@@ -2,12 +2,10 @@ package dev.krtechs.controllers;
 
 import java.util.List;
 
-
-import org.springframework.data.domain.Sort;
-import javax.persistence.OrderBy;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,17 +35,18 @@ public class EstabelecimentoController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public Estabelecimento save(@RequestBody @Valid Estabelecimento estabelecimento) {
+        estabelecimento.setCnpj_cpf(estabelecimento.getCnpj_cpf().replaceAll("\\D", ""));
         return repository.save(estabelecimento);
     }
 
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public Estabelecimento getByID(@PathVariable Integer id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estabelecimento Não Encontrado"));
+        return repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estabelecimento Não Encontrado"));
     }
 
     @GetMapping
-    @OrderBy("id")
     @PreAuthorize("hasRole('ROLE_PUBLIC') or hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public List<Estabelecimento> getAll() {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
@@ -68,7 +67,9 @@ public class EstabelecimentoController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERVISOR')")
     public void update(@PathVariable Integer id, @RequestBody @Valid Estabelecimento estabelecimentoUpdate) {
         repository.findById(id).map(estabelecimento -> {
+            estabelecimentoUpdate.setCnpj_cpf(estabelecimentoUpdate.getCnpj_cpf().replaceAll("\\D", ""));
             return repository.save(estabelecimentoUpdate);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estabelecimento Não Encontrado"));
     }
+
 }
