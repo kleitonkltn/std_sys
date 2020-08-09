@@ -34,7 +34,7 @@ public class JasperReportsService {
         try (ByteArrayOutputStream byteArray = new ByteArrayOutputStream()) {
             JasperPrint printReport;
             JasperReport pathjrxml;
-            String pathFile = new File(".").getAbsolutePath().replace(".", "reportFiles\\report.jrxml");
+            String pathFile = new File(".").getAbsolutePath().replace(".", "reportFiles/report.jrxml");
             pathjrxml = JasperCompileManager.compileReport(pathFile);
             printReport = fillReport(pathjrxml, myMap, new JRBeanCollectionDataSource(listaUs));
             bytes = JasperExportManager.exportReportToPdf(printReport);
