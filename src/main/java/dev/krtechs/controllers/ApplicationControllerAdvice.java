@@ -34,10 +34,12 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(ResponseStatusException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleResponseStatusException(final ResponseStatusException exception) {
-        final String mensageError = exception.getMessage();
-        final HttpStatus statusCode = exception.getStatus();
-        final ApiErrors apiErrors = new ApiErrors(mensageError);
-        return new ResponseEntity<>(apiErrors, statusCode);
+        CustomErrorResponse error = new CustomErrorResponse();
+        error.setErrorCode(exception.getStatus().name());
+        error.setErrorMsg(exception.getReason());
+        error.setTimestamp(LocalDateTime.now());
+        error.setStatus((exception.getStatus().value()));
+        return new ResponseEntity<>(error, exception.getStatus());
     }
 
     @ExceptionHandler(value = BadCredentialsException.class)
